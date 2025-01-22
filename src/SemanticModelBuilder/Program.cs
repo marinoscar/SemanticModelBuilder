@@ -1,4 +1,6 @@
-﻿/// <summary>
+﻿using Luval.SemanticModel;
+
+/// <summary>
 /// Application entry point
 /// </summary>
 class Program
@@ -24,7 +26,9 @@ class Program
     /// <param name="arguments"></param>
     static void DoAction(ConsoleOptions arguments)
     {
-        WriteLine("Hello World");
+        var db = DbClient.CreateSqlServer("Server=.\\SQLEXPRESS;Database=AdventureWorks2022;Integrated Security=True;TrustServerCertificate=True");
+        var res = db.GetCatalogAsync().GetAwaiter().GetResult();
+        Console.WriteLine("Done");
     }
 
     /// <summary>

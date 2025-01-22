@@ -66,6 +66,8 @@ namespace Luval.SemanticModel
                 CatalogName = tables.FirstOrDefault()?.CatalogName
             };
             catalog.Tables = tables;
+            foreach (var table in catalog.Tables)
+                await LoadReferencesAsync(table, catalog);
             return catalog;
         }
 

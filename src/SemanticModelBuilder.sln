@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luval.SemanticModel", "Luva
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SemanticModelBuilder", "SemanticModelBuilder\SemanticModelBuilder.csproj", "{F8E5E89C-A516-49AC-A102-930C77F6276A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luval.DbConnectionMate", "..\..\DbConnectionMate\src\Luval.DbConnectionMate\Luval.DbConnectionMate.csproj", "{A6D4A220-FE14-4AEB-AF39-1AA45B815620}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{F8E5E89C-A516-49AC-A102-930C77F6276A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8E5E89C-A516-49AC-A102-930C77F6276A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8E5E89C-A516-49AC-A102-930C77F6276A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6D4A220-FE14-4AEB-AF39-1AA45B815620}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6D4A220-FE14-4AEB-AF39-1AA45B815620}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6D4A220-FE14-4AEB-AF39-1AA45B815620}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6D4A220-FE14-4AEB-AF39-1AA45B815620}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
