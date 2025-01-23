@@ -102,6 +102,29 @@ namespace Luval.SemanticModel.Entities
         }
 
 
+        /// <summary>
+        /// Returns the informatio of the semantic model
+        /// </summary>
+        /// <returns></returns>
+        public IDictionary<string, object> ToSemanticModel()
+        {
+            var result = new Dictionary<string, object>();
+            result.Add("ColumnName", ColumnName);
+            result.Add("SemanticName", SemanticName);
+            result.Add("Decription", SemanticDescription);
+            //result.Add("IsNullable", IsNullable.ToString());
+            result.Add("SqlDataType", SqlDataType);
+            //result.Add("TableQualifiedName", TableQualifiedName);
+            result.Add("ColumnType", ColumnType);
+            //result.Add("DefaultAggreation", DefaultAggreation);
+            if(SampleValues != null && SampleValues.Any())
+            {
+                result.Add("SampleValues", SampleValues);
+            }
+            return result;
+        }
+
+
 
     }
 }

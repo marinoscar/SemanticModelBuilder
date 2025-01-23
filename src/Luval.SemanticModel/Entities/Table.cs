@@ -58,6 +58,11 @@ namespace Luval.SemanticModel.Entities
         public List<string> PrimaryKeys { get; set; } = new List<string>();
 
 
+        /// <summary>
+        /// Creates a new instance of the <see cref="Table"/> class from a record.
+        /// </summary>
+        /// <param name="record">The record containing table data.</param>
+        /// <returns>A new instance of the <see cref="Table"/> class.</returns>
         public static Table Create(IDictionary<string, object> record)
         {
             return new Table()
@@ -67,6 +72,23 @@ namespace Luval.SemanticModel.Entities
                 TableName = record["TABLE_NAME"].ToString()
             };
 
+        }
+
+        /// <summary>
+        /// Converts the table to a semantic model representation.
+        /// </summary>
+        /// <returns>A dictionary containing the semantic model representation of the table.</returns>
+        public IDictionary<string, object> ToSemanticModel()
+        {
+            var result = new Dictionary<string, object>();
+            result.Add("CatalogName", CatalogName);
+            result.Add("Schema", Schema);
+            result.Add("TableName", TableName);
+            result.Add("SemanticName", SemanticName);
+            result.Add("Decription", SemanticDescription);
+            result.Add("Columns", Columns.Select(i => i.ToSemanticModel()).ToList());
+            result.Add("References", References.Select(i => i.ToSemanticModel()).ToList());
+            return result;
         }
     }
 

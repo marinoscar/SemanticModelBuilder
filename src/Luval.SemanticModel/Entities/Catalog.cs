@@ -35,6 +35,15 @@ namespace Luval.SemanticModel.Entities
         /// Gets or sets the list of tables in the catalog.
         /// </summary>
         public List<Table>? Tables { get; set; } = new List<Table>();
-    }
 
+        public IDictionary<string, object> ToSemanticModel()
+        {
+            return new Dictionary<string, object>
+            {
+                { "CatalogName", CatalogName },
+                { "SqlEngine", SqlEngine },
+                { "Tables", Tables?.Select(i => i.ToSemanticModel()).ToList() }
+            };
+        }
+    }
 }
