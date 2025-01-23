@@ -1,4 +1,7 @@
 ﻿using Luval.SemanticModel;
+using Luval.SemanticModel.Entities;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 /// <summary>
 /// Application entry point
@@ -26,8 +29,16 @@ class Program
     /// <param name="arguments"></param>
     static void DoAction(ConsoleOptions arguments)
     {
-        var db = DbClient.CreateSqlServer("Server=.\\SQLEXPRESS;Database=AdventureWorks2022;Integrated Security=True;TrustServerCertificate=True");
-        var res = db.GetCatalogAsync().GetAwaiter().GetResult();
+        //var db = DbClient.CreateSqlServer("Server=.\\SQLEXPRESS;Database=AdventureWorks2022;Integrated Security=True; TrustServerCertificate=True");
+        //var catalog = db.GetCatalogAsync().GetAwaiter().GetResult();
+        //catalog.SqlEngine = "SqlServer";
+
+        //File.WriteAllText("catalog.json", catalog.ToPrettyJson());
+
+        var catalog = JsonSerializer.Deserialize<Catalog>(File.ReadAllText("catalog.json"));
+        var agent = new SemanticAgent();
+        agent.UpdateSemanticModel(catalog).GetAwaiter().GetResult();
+
         Console.WriteLine("Done");
     }
 

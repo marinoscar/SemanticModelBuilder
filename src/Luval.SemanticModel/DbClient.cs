@@ -1,4 +1,5 @@
 ﻿using Luval.DbConnectionMate;
+using Luval.SemanticModel.Dialects;
 using Luval.SemanticModel.Entities;
 using Microsoft.Data.SqlClient;
 using System.Data;
@@ -11,20 +12,23 @@ namespace Luval.SemanticModel
     public class DbClient
     {
         private readonly IDbConnection _connection;
+        private readonly IDialectProvider _dialectProvider;
 
         public static DbClient CreateSqlServer(string connectionString)
         {
-            return new DbClient(new SqlConnection(connectionString));
+            return new DbClient(new SqlConnection(connectionString), new AnsiProvider());
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DbClient"/> class.
         /// </summary>
         /// <param name="connection">The database connection to be used by the client.</param>
+        /// <param name="dialectProvider">The dialect provider to be used by the client.</param>    
         /// <exception cref="ArgumentNullException">Thrown when the connection is null.</exception>
-        public DbClient(IDbConnection connection)
+        public DbClient(IDbConnection connection, IDialectProvider dialectProvider)
         {
             _connection = connection ?? throw new ArgumentNullException(nameof(connection));
+            _dialectProvider = dialectProvider ?? throw new ArgumentNullException(nameof(dialectProvider));
         }
 
         /// <summary>
@@ -50,7 +54,7 @@ namespace Luval.SemanticModel
         {
             var sql = string.Format("SELECT COLUMN_NAME, ORDINAL_POSITION, IS_NULLABLE, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_CATALOG = '{0}' AND TABLE_SCHEMA = '{1}' AND TABLE_NAME = '{2}'", table.CatalogName, table.Schema, table.TableName);
             var columns = await _connection.ExecuteReaderAsync(sql);
-            return columns.Select(i => Column.Create(table, i)).ToList();
+            return columns.Select(i => Column.Create(table.QualifiedName, i)).ToList();
         }
 
         /// <summary>
@@ -67,8 +71,46 @@ namespace Luval.SemanticModel
             };
             catalog.Tables = tables;
             foreach (var table in catalog.Tables)
+            {
                 await LoadReferencesAsync(table, catalog);
+                table.PrimaryKeys = await GetPrimaryKeysAsync(table);
+                await LoadSampleValuesAsync(table);
+            }
             return catalog;
+        }
+
+        private async Task LoadSampleValuesAsync(Table table)
+        {
+            var textColumns = table.Columns.Where(i => i.IsText && !table.PrimaryKeys.Contains(i.ColumnName)).ToList();
+            foreach (var textColumn in textColumns)
+            {
+                var sql = _dialectProvider.GetDistinctValuesForColumn(table, textColumn.ColumnName, 10);
+                var sampleValues = (await _connection.ExecuteReaderAsync(sql)).Select(i => Convert.ToString(i[textColumn.ColumnName])).ToList();
+                textColumn.SampleValues = sampleValues;
+            }
+        }
+
+        private async Task<List<string>> GetPrimaryKeysAsync(Table table)
+        {
+            var sql = string.Format(@"
+SELECT 
+    TC.TABLE_CATALOG,
+    TC.TABLE_SCHEMA,
+    TC.TABLE_NAME,
+    KCU.COLUMN_NAME
+FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS AS TC
+JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS KCU
+    ON TC.CONSTRAINT_NAME = KCU.CONSTRAINT_NAME
+    AND TC.TABLE_SCHEMA = KCU.TABLE_SCHEMA
+    AND TC.TABLE_NAME = KCU.TABLE_NAME
+WHERE TC.CONSTRAINT_TYPE = 'PRIMARY KEY'
+AND TC.TABLE_CATALOG = '{0}'
+AND TC.TABLE_SCHEMA = '{1}'
+AND TC.TABLE_NAME = '{2}';
+                ", table.CatalogName, table.Schema, table.TableName);
+            var primaryKeys = (await _connection.ExecuteReaderAsync(sql))
+                .Select(i => Convert.ToString(i["COLUMN_NAME"])).ToList();
+            return primaryKeys;
         }
 
         /// <summary>
@@ -104,6 +146,7 @@ namespace Luval.SemanticModel
     AND CCU.TABLE_SCHEMA = '{1}'
     AND CCU.TABLE_NAME = '{2}';
                 ", parentTable.CatalogName, parentTable.Schema, parentTable.TableName);
+
             var references = await _connection.ExecuteReaderAsync(sql);
             foreach (var child in references)
             {
@@ -112,13 +155,14 @@ namespace Luval.SemanticModel
                 var childTables = catalog.Tables.Where(i => i.CatalogName == Convert.ToString(child["CHILD_TABLE_CATALOG"]) && i.Schema == Convert.ToString(child["CHILD_TABLE_SCHEMA"]) && i.TableName == Convert.ToString(child["CHILD_TABLE"]));
                 var reference = new TableReference()
                 {
-                    ParentTable = parentTable,
-                    ParentColumns = parentTable.Columns.Where(i => parentColumnNames.Contains(i.ColumnName)).ToList(),
+                    ConstraintName = Convert.ToString(child["CONSTRAINT_NAME"]),
+                    ParentTableQualifiedName = parentTable.QualifiedName,
+                    ParentColumns = parentTable.Columns.Where(i => parentColumnNames.Contains(i.ColumnName)).Select(i => i.ColumnQualifiedName).ToList()
                 };
                 foreach (var childTable in childTables)
                 {
-                    reference.ChildTable = childTable;
-                    reference.ChildColumns = childTable.Columns.Where(i => childColumnNames.Contains(i.ColumnName)).ToList();
+                    reference.ChildTableQualifiedName = childTable.QualifiedName;
+                    reference.ChildColumns = childTable.Columns.Where(i => childColumnNames.Contains(i.ColumnName)).Select(i => i.ColumnQualifiedName).ToList();
                 }
                 parentTable.References.Add(reference);
             }

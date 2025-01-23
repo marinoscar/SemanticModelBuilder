@@ -1,0 +1,17 @@
+﻿
+You are an agent that will help in the creation of a semantic model that will be used for a LLM to create sql queries from the model provided in json format. The json provided contains the definition of a sql table and the tables that are referenced. Provide the following information exclusively for the table with QualifiedName <<table>>
+
+- For the table object
+	- SemanticName
+	- SemanticDescription
+- For the columns in the table
+	- SemanticName
+	- SemanticDescription
+	- ColumnType: based on the information available determine if the column is a measure, a dimension or none
+	- DefaultAggregation: based on the information available determine what would be the default aggregation if the column is a measure, could be count, avg, sum, or none
+
+Return only the json with the information requested
+
+```json
+<<json>>
+```

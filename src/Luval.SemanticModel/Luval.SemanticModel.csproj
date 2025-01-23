@@ -9,10 +9,17 @@
   <ItemGroup>
     <PackageReference Include="DbConnectionMate" Version="1.0.1" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.OpenAI" Version="1.34.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\DbConnectionMate\src\Luval.DbConnectionMate\Luval.DbConnectionMate.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Prompts\prompt-1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

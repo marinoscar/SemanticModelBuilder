@@ -14,26 +14,26 @@ namespace Luval.SemanticModel.Entities
         /// <summary>
         /// Gets or sets the name of the constraint.
         /// </summary>
-        public string ConstraintName { get; set; }
+        public string? ConstraintName { get; set; }
 
         /// <summary>
         /// Gets or sets the parent table in the reference.
         /// </summary>
-        public Table ParentTable { get; set; }
+        public string? ParentTableQualifiedName { get; set; }
 
         /// <summary>
         /// Gets or sets the list of parent columns in the reference.
         /// </summary>
-        public List<Column> ParentColumns { get; set; } = new List<Column>();
+        public List<string>? ParentColumns { get; set; } = new List<string>();
 
         /// <summary>
         /// Gets or sets the child table in the reference.
         /// </summary>
-        public Table ChildTable { get; set; }
+        public string? ChildTableQualifiedName { get; set; }
 
         /// <summary>
         /// Gets or sets the list of child columns in the reference.
         /// </summary>
-        public List<Column> ChildColumns { get; set; } = new List<Column>();
+        public List<string>? ChildColumns { get; set; } = new List<string>();
     }
 }
