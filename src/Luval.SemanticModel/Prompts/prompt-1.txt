@@ -10,7 +10,27 @@ You are an agent that will help in the creation of a semantic model that will be
 	- ColumnType: based on the information available determine if the column is a measure, a dimension or none
 	- DefaultAggregation: based on the information available determine what would be the default aggregation if the column is a measure, could be count, avg, sum, or none
 
+Make sure the json has the following structure
+
+{
+	"Table": {
+		"SemanticName": "Semantic Name",
+		"SemanticDescription": "Semantic Description",
+	},
+	"Columns": [
+			{
+				"ColumnName": "Column Name",
+				"SemanticName": "Column Semantic Name",
+				"SemanticDescription": "Column Semantic Description",
+				"ColumnType": "Column Type",
+				"DefaultAggregation": "Default Aggregation"
+			}
+		]
+}
+
 Return only the json with the information requested
+
+Here is the json to use as a reference
 
 ```json
 <<json>>

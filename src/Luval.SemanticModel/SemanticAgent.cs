@@ -39,9 +39,14 @@ namespace Luval.SemanticModel
             };
         }
 
-        public async Task UpdateSemanticModel(Catalog catalog)
+        public async Task<Catalog> UpdateSemanticModel(Catalog catalog)
         {
             _logger.LogInformation("Starting UpdateSemanticModel for catalog {CatalogName}", catalog.CatalogName);
+            var newCatalog = new Catalog()
+            {
+                CatalogName = catalog.CatalogName,
+                SqlEngine = catalog.SqlEngine
+            };
             var totalCount = catalog.Tables.Count;
             foreach (var table in catalog.Tables)
             {
@@ -53,7 +58,9 @@ namespace Luval.SemanticModel
                     try
                     {
                         _logger.LogInformation("Updating semantic model for table {TableName} {index} of {totalCount}", table.QualifiedName, index + 1, totalCount);
-                        await UpdateTableSemanticModel(catalog, table);
+                        var newTable = await UpdateTableSemanticModel(catalog, table);
+
+                        newCatalog.Tables.Add(newTable);
                         working = false;
                     }
                     catch (Exception ex)
@@ -69,11 +76,12 @@ namespace Luval.SemanticModel
                     }
                 }
             }
-            File.WriteAllText("full-catalog.json", catalog.ToPrettyJson());
+            File.WriteAllText("full-catalog.json", newCatalog.ToPrettyJson());
             _logger.LogInformation("Completed UpdateSemanticModel for catalog {CatalogName}", catalog.CatalogName);
+            return newCatalog;
         }
 
-        private async Task UpdateTableSemanticModel(Catalog catalog, Table table)
+        private async Task<Table> UpdateTableSemanticModel(Catalog catalog, Table table)
         {
             _logger.LogInformation("Creating catalog for inspection for table {TableName}", table.QualifiedName);
             var newCatalog = CreateCatalogForInspection(catalog, table);
@@ -84,6 +92,7 @@ namespace Luval.SemanticModel
             _logger.LogInformation("Received JSON result for table {TableName}", table.QualifiedName);
             MergeTable(table, ParseJson(json));
             _logger.LogInformation("Merged AI results into table {TableName}", table.QualifiedName);
+            return table;
         }
 
 
@@ -103,12 +112,12 @@ namespace Luval.SemanticModel
         {
             table.SemanticName = aiTable.SemanticName;
             table.SemanticDescription = aiTable.SemanticDescription;
-            foreach (var c in table.Columns)
+            foreach (var col in table.Columns)
             {
-                c.SemanticName = aiTable.Columns.FirstOrDefault(i => i.ColumnName == c.ColumnName)?.SemanticName;
-                c.SemanticDescription = aiTable.Columns.FirstOrDefault(i => i.ColumnName == c.ColumnName)?.SemanticDescription;
-                c.ColumnType = aiTable.Columns.FirstOrDefault(i => i.ColumnName == c.ColumnName)?.ColumnType;
-                c.DefaultAggreation = aiTable.Columns.FirstOrDefault(i => i.ColumnName == c.ColumnName)?.DefaultAggreation;
+                col.SemanticName = aiTable.Columns.FirstOrDefault(i => i.ColumnName == col.ColumnName)?.SemanticName;
+                col.SemanticDescription = aiTable.Columns.FirstOrDefault(i => i.ColumnName == col.ColumnName)?.SemanticDescription;
+                col.ColumnType = aiTable.Columns.FirstOrDefault(i => i.ColumnName == col.ColumnName)?.ColumnType;
+                col.DefaultAggreation = aiTable.Columns.FirstOrDefault(i => i.ColumnName == col.ColumnName)?.DefaultAggreation;
             }
         }
 
