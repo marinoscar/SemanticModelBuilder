@@ -11,7 +11,7 @@ using Luval.SemanticModel.Entities;
 
 namespace Luval.SemanticModel
 {
-    public class QueryAgent
+    public class LocalQueryAgent
     {
         private readonly Kernel _kernel;
         private readonly IChatCompletionService _chatCompletionService;
@@ -21,7 +21,7 @@ namespace Luval.SemanticModel
         private readonly Catalog _catalog;
 
 
-        public QueryAgent(ILogger logger, Catalog catalog)
+        public LocalQueryAgent(ILogger logger, Catalog catalog)
         {
             _logger = logger;
             var builder = Kernel.CreateBuilder().AddOpenAIChatCompletion("gpt-4o", GetKey());

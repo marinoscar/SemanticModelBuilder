@@ -43,7 +43,7 @@ class Program
         var q = "go";
         Console.WriteLine("Ask a question");
         Console.WriteLine("");
-        var agent = new QueryAgent(new ColorConsoleLogger(), catalog);
+        var agent = new LocalQueryAgent(new ColorConsoleLogger(), catalog);
         while (!string.IsNullOrEmpty(q))
         {
             q = Console.ReadLine();
