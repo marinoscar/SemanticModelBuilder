@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>3a66c2db-211f-483e-8c01-8df12e191111</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Luval.GenAIBotMate.Components" Version="1.0.21" />
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.11.3" />
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.11.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\DbConnectionMate\src\Luval.DbConnectionMate\Luval.DbConnectionMate.csproj" />
+    <ProjectReference Include="..\Luval.SemanticModel\Luval.SemanticModel.csproj" />
+  </ItemGroup>
+</Project>
