@@ -87,7 +87,8 @@ namespace Luval.SemanticModel.Entities
             result.Add("SemanticName", SemanticName);
             result.Add("Decription", SemanticDescription);
             result.Add("Columns", Columns.Select(i => i.ToSemanticModel()).ToList());
-            result.Add("References", References.Select(i => i.ToSemanticModel()).ToList());
+            if(References != null && References.Any())
+                result.Add("Foreign Keys", References.Select(i => i.ToSemanticModel()).ToList());
             return result;
         }
     }

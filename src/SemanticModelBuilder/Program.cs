@@ -35,11 +35,22 @@ class Program
 
         //File.WriteAllText("catalog.json", catalog.ToPrettyJson());
 
-        var catalog = JsonSerializer.Deserialize<Catalog>(File.ReadAllText("catalog.json"));
-        var agent = new SemanticAgent();
-        agent.UpdateSemanticModel(catalog).GetAwaiter().GetResult();
-
-        Console.WriteLine("Done");
+        var catalog = JsonSerializer.Deserialize<Catalog>(File.ReadAllText("full-catalog.json"));
+        //var agent = new SemanticAgent();
+        //agent.UpdateSemanticModel(catalog).GetAwaiter().GetResult();
+        var yaml = catalog.ToYAML();
+        File.WriteAllText("catalog.yaml", yaml);
+        var q = "go";
+        Console.WriteLine("Ask a question");
+        Console.WriteLine("");
+        var agent = new QueryAgent(new ColorConsoleLogger(), catalog);
+        while (!string.IsNullOrEmpty(q))
+        {
+            q = Console.ReadLine();
+            var res = agent.AddUserMessage(q);
+            Console.WriteLine(res);
+            Console.WriteLine("");
+        }
     }
 
     /// <summary>

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YamlDotNet.Core;
+using YamlDotNet.Serialization.NamingConventions;
+using YamlDotNet.Serialization;
 
 namespace Luval.SemanticModel.Entities
 {
@@ -36,6 +39,10 @@ namespace Luval.SemanticModel.Entities
         /// </summary>
         public List<Table>? Tables { get; set; } = new List<Table>();
 
+        /// <summary>
+        /// Converts the catalog to a semantic model representation.
+        /// </summary>
+        /// <returns>A dictionary containing the semantic model representation of the catalog.</returns>
         public IDictionary<string, object> ToSemanticModel()
         {
             return new Dictionary<string, object>
@@ -44,6 +51,20 @@ namespace Luval.SemanticModel.Entities
                 { "SqlEngine", SqlEngine },
                 { "Tables", Tables?.Select(i => i.ToSemanticModel()).ToList() }
             };
+        }
+
+        /// <summary>
+        /// Converts the catalog object to a YAML string representation.
+        /// </summary>
+        /// <returns>A YAML string representation of the catalog.</returns>
+        public string ToYAML()
+        {
+            var serializer = new SerializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .Build();
+            var model = ToSemanticModel();
+            var yaml = serializer.Serialize(model);
+            return yaml;
         }
     }
 }

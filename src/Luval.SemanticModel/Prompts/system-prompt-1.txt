@@ -1,0 +1,2 @@
+﻿You will help in creating a SQL Server Query for the question the user has provided, in order to create the query, please use the following semantic model
+<<yaml>>
