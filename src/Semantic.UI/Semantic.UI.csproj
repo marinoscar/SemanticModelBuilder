@@ -17,4 +17,13 @@
     <ProjectReference Include="..\..\..\DbConnectionMate\src\Luval.DbConnectionMate\Luval.DbConnectionMate.csproj" />
     <ProjectReference Include="..\Luval.SemanticModel\Luval.SemanticModel.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Prompts\prompt-1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Prompts\system-prompt-1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

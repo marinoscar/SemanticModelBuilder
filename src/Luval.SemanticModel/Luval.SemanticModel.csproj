@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="DbConnectionMate" Version="1.0.1" />
+    <PackageReference Include="Luval.GenAIBotMate.Components" Version="1.0.21" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.1" />
     <PackageReference Include="Microsoft.SemanticKernel.Connectors.OpenAI" Version="1.34.0" />

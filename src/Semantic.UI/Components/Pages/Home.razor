@@ -1,9 +1,15 @@
 ﻿@page "/"
+@using Luval.SemanticModel
+@using Microsoft.SemanticKernel
+@using Microsoft.SemanticKernel.Connectors.OpenAI
+@rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
 
-<GenAIBotMateControl @ref="Control" Service="@BotService" 
-ChatTitle="New Chat">
+<GenAIBotMateControl @ref="Control" 
+            Service="@Agent" 
+            PromptSettings="GetSettings()"
+            ChatTitle="New Chat">
 
 </GenAIBotMateControl>
 
@@ -11,5 +17,14 @@ ChatTitle="New Chat">
     private GenAIBotMateControl Control { get; set; }
 
     [Inject]
-    private GenAIBotService BotService { get; set; }
+    public required DatabaseAgent Agent { get; set; }
+
+    private OpenAIPromptExecutionSettings GetSettings()
+    {
+        return new OpenAIPromptExecutionSettings()
+            {
+                Temperature = 0,
+                FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
+            };
+    }
 }
