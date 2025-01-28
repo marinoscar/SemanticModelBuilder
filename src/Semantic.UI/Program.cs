@@ -66,14 +66,14 @@ namespace Semantic.UI
         {
             var bot = context.GenAIBots.FirstOrDefault();
             if (bot == null) return;
-            if (string.IsNullOrEmpty(bot.SystemPrompt))
-            {
-                bot.SystemPrompt = DatabaseAgent.GetSystemPrompt();
-                bot.UtcUpdatedOn = DateTime.UtcNow;
-                bot.UpdatedBy = "System";
-                bot.Version++;
-                context.SaveChanges();
-            }
+            var systemPrompt = DatabaseAgent.GetSystemPrompt();
+            if (!string.IsNullOrEmpty(bot.SystemPrompt) && bot.SystemPrompt.ToLower().Equals(systemPrompt.ToLower())) return;
+            bot.SystemPrompt = DatabaseAgent.GetSystemPrompt();
+            bot.UtcUpdatedOn = DateTime.UtcNow;
+            bot.UpdatedBy = "System";
+            bot.Version++;
+            context.SaveChanges();
+
         }
     }
 }
