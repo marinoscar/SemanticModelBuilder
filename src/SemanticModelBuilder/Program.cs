@@ -29,28 +29,31 @@ class Program
     /// <param name="arguments"></param>
     static void DoAction(ConsoleOptions arguments)
     {
-        //var db = DbClient.CreateSqlServer("Server=.\\SQLEXPRESS;Database=AdventureWorks2022;Integrated Security=True; TrustServerCertificate=True");
+        //var db = DbClient.CreateSqlServer("Server=.\\SQLEXPRESS;Database=DrillBabyDrill;Integrated Security=True; TrustServerCertificate=True");
         //var catalog = db.GetCatalogAsync().GetAwaiter().GetResult();
         //catalog.SqlEngine = "SqlServer";
 
         //File.WriteAllText("catalog.json", catalog.ToPrettyJson());
 
-        var catalog = JsonSerializer.Deserialize<Catalog>(File.ReadAllText("full-catalog.json"));
-        //var agent = new SemanticAgent();
-        //agent.UpdateSemanticModel(catalog).GetAwaiter().GetResult();
+        var catalog = JsonSerializer.Deserialize<Catalog>(File.ReadAllText("catalog.json"));
+        var agent = new SemanticAgent();
+        agent.UpdateSemanticModel(catalog).GetAwaiter().GetResult();
         var yaml = catalog.ToYAML();
         File.WriteAllText("catalog.yaml", yaml);
-        var q = "go";
-        Console.WriteLine("Ask a question");
-        Console.WriteLine("");
-        var agent = new LocalQueryAgent(new ColorConsoleLogger(), catalog);
-        while (!string.IsNullOrEmpty(q))
-        {
-            q = Console.ReadLine();
-            var res = agent.AddUserMessage(q);
-            Console.WriteLine(res);
-            Console.WriteLine("");
-        }
+        var fullCatalog = catalog.ToJson();
+        File.WriteAllText("full-catalog.json", fullCatalog);
+
+        //var q = "go";
+        //Console.WriteLine("Ask a question");
+        //Console.WriteLine("");
+        //var agent = new LocalQueryAgent(new ColorConsoleLogger(), catalog);
+        //while (!string.IsNullOrEmpty(q))
+        //{
+        //    q = Console.ReadLine();
+        //    var res = agent.AddUserMessage(q);
+        //    Console.WriteLine(res);
+        //    Console.WriteLine("");
+        //}
     }
 
     /// <summary>

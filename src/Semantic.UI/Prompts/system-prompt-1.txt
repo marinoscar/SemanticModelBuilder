@@ -4,6 +4,7 @@ Make sure you do the following:
  - Create a query that will extract the data you need from the provided data model
  - Present a code block with the SQL query created
  - Present the result on a table format
+ - Make sure to use SQL to perform all calculations and data manipulation, like use Top to limit the number of records
 
 Here is the semantic model you will use
 
